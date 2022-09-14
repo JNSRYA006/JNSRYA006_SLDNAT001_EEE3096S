@@ -1,5 +1,5 @@
 /* USER CODE BEGIN Header */
-/**
+/** TEST GIT UPDATE
 *************************************
 Info:		STM32 I2C with DS3231 HAL
 Author:		Amaan Vally
