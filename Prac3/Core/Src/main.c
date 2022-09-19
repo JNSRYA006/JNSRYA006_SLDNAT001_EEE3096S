@@ -124,10 +124,14 @@ int main(void)
   while (1)
   {
 	  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); // Toggle blue LED
+
 	  //TO DO:
 	  //TASK 2
 	  //Test your pollADC function and display via UART
-	  sprintf(buffer, "%d \r\n", 55555555555555);
+	  sprintf(buffer, "%d \r\n\r\n", pollADC()); //Neeed to change format specifier
+	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+
+	  sprintf(buffer, "%d \r\n\r\n", ADCtoCRR(pollADC()));
 	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 
 	  //TASK 3
@@ -421,32 +425,31 @@ void EXTI0_1_IRQHandler(void)
 
 uint32_t pollADC(void){
 
-	HAL_ADC_Start(&hadc1); // start the adc
+	uint32_t adc_val;
 
-	HAL_ADC_PollForConversion(&hadc1, 100); // poll for conversion
+	HAL_ADC_Start(&hadc); // start the adc
 
-	adc_val = HAL_ADC_GetValue(&hadc1); // get the adc value
+	HAL_ADC_PollForConversion(&hadc, 100); // poll for conversion
 
-	HAL_ADC_Stop(&hadc1); // stop adc
+	adc_val = HAL_ADC_GetValue(&hadc); // get the adc value
+
+	HAL_ADC_Stop(&hadc); // stop adc
 
 	HAL_Delay (500); // wait for 500ms
 
 	// Code referenced from: https://controllerstech.com/stm32-adc-single-channel/
-
-	//TO DO:
-	//TASK 2
-	// Complete the function body
-	return val;
+	return adc_val;
 }
 
 uint32_t ADCtoCRR(uint32_t adc_val){
 	//TO DO:
 	//TASK 2
 	// Complete the function body
+	uint32_t crr_val = adc_val * (47999/4096);
+	return crr_val;
 	//HINT: The CRR value for 100% DC is 47999 (DC = CRR/ARR = CRR/47999)
 	//HINT: The ADC range is approx 0 - 4095
 	//HINT: Scale number from 0-4096 to 0 - 47999
-	return val;
 }
 
 /* USER CODE END 4 */
