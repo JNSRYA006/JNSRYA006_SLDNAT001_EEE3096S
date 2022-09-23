@@ -51,11 +51,12 @@ UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
-char buffer[10];
+char buffer[16];
 
 //TO DO:
 //TASK 1
 //Create global variables for debouncing and delay interval
+int Delay = 1000; //Set initial delay to 1000ms = 1s
 int freq = 1;
 
 /* USER CODE END PV */
@@ -113,7 +114,6 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
-  //TO DO:
   //Create variables needed in while loop
 
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4); //Start the PWM on TIM3 Channel 4 (Green LED)
@@ -126,22 +126,40 @@ int main(void)
 	  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); // Toggle blue LED
 
 	  //TO DO:
-	  //TASK 2
-	  //Test your pollADC function and display via UART
-	  sprintf(buffer, "%d \r\n\r\n", pollADC()); //Neeed to change format specifier
-	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 
-	  sprintf(buffer, "%d \r\n\r\n", ADCtoCRR(pollADC()));
-	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+	  //sprintf(buffer, "pollADC: %d \r\n\r\n", pollADC()); //Need to change format specifier
+	  //HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+
 
 	  //TASK 3
 	  //Test your ADCtoCRR function. Display CRR value via UART
+	  //sprintf(buffer, "CRR Value: %d \r\n\r\n", ADCtoCRR(pollADC()));
+	  //HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 
-	  //TASK 4
-	  //Complete rest of implementation
+	  //TASK 2
+	  //Test the pollADC function and display it via UART
+	  sprintf(buffer, "ADC: \n\r");
+	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+	  sprintf(buffer, "%ld\r\n", pollADC());
+	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 
-	  HAL_Delay (500); // wait for 500 ms
+	  //TASK 3
+	  /*Test your ADCtoCRR function. Display CRR value via UART
+	   *As the potentiometer is adjusted from 0, the Duty cycle can be seen to
+	   *increase up to the maximum value of ....
+	   */
+	  sprintf(buffer, "Duty Cycle:\n\r");
+	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+	  uint32_t ccr_val = ADCtoCRR(pollADC());
+	  sprintf (buffer, "%ld\r\n", ccr_val);
+	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+	  __HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_4, ccr_val);
 
+	  	  //TASK 4
+	  	  //Complete rest of implementation
+	  sprintf(buffer, "-----------\n\r");
+	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+	  HAL_Delay (Delay);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -404,18 +422,18 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void EXTI0_1_IRQHandler(void)
 {
-	int tick = HAL_GetTick();
-	for(int i = tick; i < (tick + 10); i++); //Delay the ticks by 10 ticks
-
-	// Change between 1Hz & 2Hz for LED
-
-	if(freq == 1) {
-		freq = 2;
-	}
-	else if (freq == 2) {
-		freq = 1;
-	}
-
+//	uint32_t tick = HAL_GetTick();
+//	for(int i = tick; i < (tick + 10); i++); //Delay the ticks by 10 ticks
+//
+//	// Change between 1Hz & 2Hz for LED
+//
+//	if(freq == 1) {
+//		freq = 5;
+//	}
+//	else {
+//		freq = 1;
+//	}
+	Delay = 2000;
 	//TO DO:
 	//TASK 1
 	//Switch delay frequency
@@ -425,31 +443,30 @@ void EXTI0_1_IRQHandler(void)
 
 uint32_t pollADC(void){
 
-	uint32_t adc_val;
 
-	HAL_ADC_Start(&hadc); // start the adc
+	HAL_ADC_Start(&hadc); //Start the ADC
 
-	HAL_ADC_PollForConversion(&hadc, 100); // poll for conversion
+	HAL_ADC_PollForConversion(&hadc, 1); //Poll for conversion
 
-	adc_val = HAL_ADC_GetValue(&hadc); // get the adc value
+	uint32_t adc_val = HAL_ADC_GetValue(&hadc); //Get the ADC value
 
-	HAL_ADC_Stop(&hadc); // stop adc
+	HAL_ADC_Stop(&hadc); //Stop ADC
 
-	HAL_Delay (500); // wait for 500ms
+	return adc_val; //Return the ADC Value
 
 	// Code referenced from: https://controllerstech.com/stm32-adc-single-channel/
-	return adc_val;
 }
 
 uint32_t ADCtoCRR(uint32_t adc_val){
-	//TO DO:
 	//TASK 2
-	// Complete the function body
-	uint32_t crr_val = adc_val * (47999/4096);
-	return crr_val;
-	//HINT: The CRR value for 100% DC is 47999 (DC = CRR/ARR = CRR/47999)
-	//HINT: The ADC range is approx 0 - 4095
-	//HINT: Scale number from 0-4096 to 0 - 47999
+	int CRR = 4095;
+
+		if (adc_val<=4095)
+		{
+			CRR = (adc_val*47999)/4095;
+		}
+
+		return CRR;
 }
 
 /* USER CODE END 4 */
