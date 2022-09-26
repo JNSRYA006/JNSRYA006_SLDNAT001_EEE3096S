@@ -128,6 +128,7 @@ int main(void)
 
 	  //TASK 2
 	  //Test the pollADC function and display it via UART
+	  //ADC has a maximum value of 4095, which is a resolution of 12 bits
 
 	  sprintf(buffer, "ADC:%ld\n\r",pollADC());
 	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
