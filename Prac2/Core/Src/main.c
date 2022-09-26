@@ -146,7 +146,7 @@ int main(void){
 
 	getTime();
 	int Epoch = epochFromTime(time);
-	int x = 10;
+	int x = 10; // Decimal value used to test decToBcd & bcdToDec functions
 
 	//TASK 1
 	/*
@@ -445,7 +445,7 @@ void getTime (void)
 	//HAL_I2C_Mem_Read(&hi2c1, DS3231_ADDRESS, FIRST_REG, REG_SIZE, get_time, 7, 1000);
 	HAL_I2C_Mem_Read(&hi2c1, DS3231_ADDRESS, 0x00, 1, get_time, 7, 1000);
 
-	/*Write the time that is read from the RTC and put it into the time structure
+	/*Write the time that is read from the RTC and put it into the time structure.
 	RTC works on BCD, so these BCD values are converted back to the expected decimal
 	values for time
 	 */

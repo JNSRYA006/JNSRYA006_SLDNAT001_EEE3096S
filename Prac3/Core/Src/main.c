@@ -125,16 +125,6 @@ int main(void)
   {
 	  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8); // Toggle blue LED
 
-	  //TO DO:
-
-	  //sprintf(buffer, "pollADC: %d \r\n\r\n", pollADC()); //Need to change format specifier
-	  //HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
-
-
-	  //TASK 3
-	  //Test your ADCtoCRR function. Display CRR value via UART
-	  //sprintf(buffer, "CRR Value: %d \r\n\r\n", ADCtoCRR(pollADC()));
-	  //HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 
 	  //TASK 2
 	  //Test the pollADC function and display it via UART
@@ -155,8 +145,8 @@ int main(void)
 	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 	  __HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_4, ccr_val);
 
-	  	  //TASK 4
-	  	  //Complete rest of implementation
+	  //TASK 4
+	  //Complete rest of implementation
 	  sprintf(buffer, "-----------\n\r");
 	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 	  HAL_Delay (Delay);
@@ -422,19 +412,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void EXTI0_1_IRQHandler(void)
 {
-//	uint32_t tick = HAL_GetTick();
-//	for(int i = tick; i < (tick + 10); i++); //Delay the ticks by 10 ticks
-//
-//	// Change between 1Hz & 2Hz for LED
-//
-//	if(freq == 1) {
-//		freq = 5;
-//	}
-//	else {
-//		freq = 1;
-//	}
 	Delay = 2000;
-	//TO DO:
 	//TASK 1
 	//Switch delay frequency
 
@@ -443,7 +421,7 @@ void EXTI0_1_IRQHandler(void)
 
 uint32_t pollADC(void){
 
-
+	//TASK 1
 	HAL_ADC_Start(&hadc); //Start the ADC
 
 	HAL_ADC_PollForConversion(&hadc, 1); //Poll for conversion
@@ -458,6 +436,7 @@ uint32_t pollADC(void){
 }
 
 uint32_t ADCtoCRR(uint32_t adc_val){
+
 	//TASK 2
 	int CRR = 4095;
 
