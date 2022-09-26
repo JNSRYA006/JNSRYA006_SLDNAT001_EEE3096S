@@ -51,12 +51,12 @@ UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
-char buffer[16];
+char buffer[24];
 
 //TO DO:
 //TASK 1
 //Create global variables for debouncing and delay interval
-int Delay = 1000; //Set initial delay to 1000ms = 1s
+int DELAY = 1000; //Set initial delay to 1000ms = 1s
 int freq = 1;
 
 /* USER CODE END PV */
@@ -128,28 +128,28 @@ int main(void)
 
 	  //TASK 2
 	  //Test the pollADC function and display it via UART
-	  sprintf(buffer, "ADC: \n\r");
-	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
-	  sprintf(buffer, "%ld\r\n", pollADC());
+
+	  sprintf(buffer, "ADC:%ld\n\r",pollADC());
 	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 
 	  //TASK 3
 	  /*Test your ADCtoCRR function. Display CRR value via UART
 	   *As the potentiometer is adjusted from 0, the Duty cycle can be seen to
-	   *increase up to the maximum value of ....
+	   *increase up to the maximum value of 47999
 	   */
-	  sprintf(buffer, "Duty Cycle:\n\r");
-	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+
 	  uint32_t ccr_val = ADCtoCRR(pollADC());
-	  sprintf (buffer, "%ld\r\n", ccr_val);
+	  sprintf(buffer, "Duty:%ld\n\r", ccr_val);
 	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 	  __HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_4, ccr_val);
 
+
 	  //TASK 4
 	  //Complete rest of implementation
-	  sprintf(buffer, "-----------\n\r");
+
+	  sprintf(buffer, "-------\n\r");
 	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
-	  HAL_Delay (Delay);
+	  HAL_Delay (DELAY);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -412,9 +412,16 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void EXTI0_1_IRQHandler(void)
 {
-	Delay = 2000;
+
 	//TASK 1
 	//Switch delay frequency
+
+	if (DELAY == 1000) {
+		DELAY = 2000;
+	}
+	else {
+		DELAY = 1000;
+	}
 
 	HAL_GPIO_EXTI_IRQHandler(B1_Pin); // Clear interrupt flags
 }

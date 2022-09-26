@@ -44,8 +44,8 @@ typedef struct {
 //TO DO:
 //TASK 2
 //Give DELAY1 and DELAY2 sensible values
-#define DELAY1 40088
-#define DELAY2 10
+#define DELAY1 590
+#define DELAY2 110
 
 //TO DO:
 //TASK 4
@@ -134,7 +134,7 @@ int main(void){
   //TASK 6
 
   //setTime(sec, min, hour, dow, dom, month, year)
-  setTime(36, 39, 23, 1, 19, 9, 22);
+  setTime(00, 00, 00, 2, 20, 9, 22);
 
   /* USER CODE END 2 */
 
@@ -146,13 +146,13 @@ int main(void){
 
 	getTime();
 	int Epoch = epochFromTime(time);
-	int x = 10; // Decimal value used to test decToBcd & bcdToDec functions
+	int x = 90; // Decimal value used to test decToBcd & bcdToDec functions
 
 	//TASK 1
-	/*
+
 	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
 	pause_sec(1);
-	*/
+
 
 	//TASK 3
 	//Test decToBcd and bcdToDec
@@ -164,8 +164,11 @@ int main(void){
 	sprintf(buffer, "\r\nDecToBcd: %d", y);
 	HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 
-	sprintf(buffer2, "\r\nBcdToDec: %d ", bcdToDec(y));
-	HAL_UART_Transmit(&huart2, buffer2, sizeof(buffer2), 1000);
+	sprintf(buffer, "\r\nBcdToDec: %d ", bcdToDec(y));
+	HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+
+	sprintf(buffer, "\r\n------------\n\r");
+	HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 	pause_sec(1);
 */
 
@@ -178,24 +181,19 @@ int main(void){
 	  sprintf(buffer, "%s\r\n", "READ RTC");
 	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 	  getTime();
-	  sprintf (buffer2, "%02d:%02d:%02d \r\n", time.hour, time.minutes, time.seconds);
-	  HAL_UART_Transmit(&huart2, buffer2, sizeof(buffer2), 1000);
-	  sprintf (buffer2, "%02d-%02d-20%02d ", time.dayofmonth, time.month, time.year);
-	  HAL_UART_Transmit(&huart2, buffer2, sizeof(buffer2), 1000);
-	  sprintf(buffer3, "\r\nEPOCH: %d \r\n\n", epochFromTime(time));
-	  HAL_UART_Transmit(&huart2, buffer3, sizeof(buffer3), 1000);
-	  pause_sec(1);
+	  sprintf (buffer, "%02d:%02d:%02d \r\n", time.hour, time.minutes, time.seconds);
+	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+	  sprintf (buffer, "%02d-%02d-20%02d ", time.dayofmonth, time.month, time.year);
+	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+	  sprintf(buffer, "\r\n---------\n\r");
+	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 */
-	 sprintf(buffer, "\r\n %02d:%02d:%02d \r\n\r\n", time.hour, time.minutes, time.seconds);
-	 HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+/*
+	  sprintf(buffer, "\r\nEPOCH: %d \r\n\n", epochFromTime(time));
+	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
+*/
 
-	 sprintf(buffer, "%02d-%02d-20%02d \r\n\r\n", time.dayofmonth, time.month, time.year);
-	 HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
-
-	 sprintf(buffer, "Epoch Time: %d \r\n", Epoch);
-	 HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
-
-	 pause_sec(1);
+	  pause_sec(1); //DON'T COMMENT OUT
 
     /* USER CODE BEGIN 3 */
   }
@@ -384,11 +382,12 @@ void pause_sec(float x)
 {
 	//TASK 2
 	//Delay program execution for x seconds
-
-	for (int i = 0;i<x;i++)						//this loop runs for however many seconds we want to waste
-	{											//i.e. if we want to waste 1 second, the loop runs once
-		for (int j =0 ;j<8*DELAY1*DELAY2;j++)	//this loop wastes the right amount of clock cycles to waste 1 second
+	int todo = 0;
+	for (int i = 0;i<DELAY1;i++)
+	{
+		for (int j =0 ;j<DELAY2*x;j++)
 		{
+			todo ++;
 		}
 	}
 
