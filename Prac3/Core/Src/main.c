@@ -140,6 +140,7 @@ int main(void)
 	   */
 
 	  uint32_t ccr_val = ADCtoCRR(pollADC());
+	  uint32_t dutypercent = (ccr_val/47999)*100;
 	  sprintf(buffer, "Duty:%ld\n\r", ccr_val);
 	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 	  __HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_4, ccr_val);

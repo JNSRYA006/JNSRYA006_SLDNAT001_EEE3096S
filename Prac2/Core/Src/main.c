@@ -44,8 +44,8 @@ typedef struct {
 //TO DO:
 //TASK 2
 //Give DELAY1 and DELAY2 sensible values
-#define DELAY1 590
-#define DELAY2 110
+#define DELAY1 66
+#define DELAY2 2003
 
 //TO DO:
 //TASK 4
@@ -134,7 +134,7 @@ int main(void){
   //TASK 6
 
   //setTime(sec, min, hour, dow, dom, month, year)
-  setTime(00, 00, 00, 2, 20, 9, 22);
+  //setTime(00,00,12,2,20,9,22);
 
   /* USER CODE END 2 */
 
@@ -146,12 +146,11 @@ int main(void){
 
 	getTime();
 	int Epoch = epochFromTime(time);
-	int x = 90; // Decimal value used to test decToBcd & bcdToDec functions
+	int x = 53; // Decimal value used to test decToBcd & bcdToDec functions
 
 	//TASK 1
 
 	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
-	pause_sec(1);
 
 
 	//TASK 3
@@ -169,15 +168,14 @@ int main(void){
 
 	sprintf(buffer, "\r\n------------\n\r");
 	HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
-	pause_sec(1);
-*/
 
+*/
 
 
 	//TASK 6
 
 	//Output Current Time, Current Date, and EPOCH time
-/*
+
 	  sprintf(buffer, "%s\r\n", "READ RTC");
 	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 	  getTime();
@@ -187,11 +185,9 @@ int main(void){
 	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
 	  sprintf(buffer, "\r\n---------\n\r");
 	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
-*/
-/*
-	  sprintf(buffer, "\r\nEPOCH: %d \r\n\n", epochFromTime(time));
+
+	  sprintf(buffer, "%d \n\r", epochFromTime(time));
 	  HAL_UART_Transmit(&huart2, buffer, sizeof(buffer), 1000);
-*/
 
 	  pause_sec(1); //DON'T COMMENT OUT
 
